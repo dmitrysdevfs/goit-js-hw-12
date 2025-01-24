@@ -19,62 +19,61 @@ const toastSettings = {
   maxWidth: '360px',
 };
 
-const onSearchFormSubmit = event => {
-  event.preventDefault();
+const onSearchFormSubmit = async event => {
+  try {
+    event.preventDefault();
 
-  const searchedQuery = event.currentTarget.elements.search_query.value.trim();
+    const searchedQuery =
+      event.currentTarget.elements.search_query.value.trim();
 
-  if (searchedQuery === '') {
-    iziToast.show({
-      message: 'The field must be filled!',
-      ...toastSettings,
-    });
+    if (searchedQuery === '') {
+      iziToast.show({
+        message: 'The field must be filled!',
+        ...toastSettings,
+      });
 
-    return;
-  }
+      return;
+    }
 
-  showLoader();
-  galleryEl.innerHTML = '';
+    showLoader();
+    galleryEl.innerHTML = '';
 
-  fetchPhotosByQuery(searchedQuery)
-    .then(data => {
-      if (data.total === 0) {
-        iziToast.show({
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-          ...toastSettings,
-        });
+    const { data } = await fetchPhotosByQuery(searchedQuery);
+    if (data.total === 0) {
+      iziToast.show({
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
+        ...toastSettings,
+      });
 
-        galleryEl.innerHTML = '';
+      galleryEl.innerHTML = '';
 
-        searchFormEl.reset();
-
-        hideLoader();
-
-        return;
-      }
-
-      const galleryTemplate = data?.hits
-        .map(el => createdGalleryCardTemplate(el))
-        .join('');
-
-      galleryEl.innerHTML = galleryTemplate;
+      hideLoader();
 
       searchFormEl.reset();
 
-      let lightbox = new SimpleLightbox('.gallery a', {
-        captionsData: 'alt',
-        captionDelay: 250,
-      });
+      return;
+    }
 
-      lightbox.refresh();
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .finally(() => {
-      hideLoader();
+    const galleryTemplate = data?.hits
+      .map(el => createdGalleryCardTemplate(el))
+      .join('');
+
+    galleryEl.innerHTML = galleryTemplate;
+
+    hideLoader();
+
+    searchFormEl.reset();
+
+    let lightbox = new SimpleLightbox('.gallery a', {
+      captionsData: 'alt',
+      captionDelay: 250,
     });
+
+    lightbox.refresh();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);

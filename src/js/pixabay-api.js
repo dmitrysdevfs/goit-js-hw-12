@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const apiKey = import.meta.env.VITE_API_KEY;
 const BASE_URL = 'https://pixabay.com/api/';
 
@@ -10,11 +12,13 @@ export const fetchPhotosByQuery = searchedQuery => {
     safesearch: true,
   });
 
-  return fetch(`${BASE_URL}?${searchParams}`).then(response => {
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
+  return axios.get(`${BASE_URL}?${searchParams}`);
 
-    return response.json();
-  });
+  // return fetch(`${BASE_URL}?${searchParams}`).then(response => {
+  //   if (!response.ok) {
+  //     throw new Error(response.status);
+  //   }
+
+  //   return response.json();
+  // });
 };
