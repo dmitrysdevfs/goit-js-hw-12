@@ -37,6 +37,13 @@ body {
   letter-spacing: var(--letter-spacing);
 }
 
+.gallery:empty {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  visibility: hidden;
+}
+
 .gallery {
   display: flex;
   flex-wrap: wrap;

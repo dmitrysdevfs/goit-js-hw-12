@@ -113,6 +113,10 @@ const onLoadMoreBtnClick = async event => {
   try {
     page++;
 
+    showLoader();
+
+    hideLoadMoreBtn();
+
     const { data } = await fetchPhotosByQuery(searchedQuery, page);
 
     renderedImages += data.hits.length;
@@ -124,7 +128,15 @@ const onLoadMoreBtnClick = async event => {
 
     galleryEl.insertAdjacentHTML('beforeend', galleryTemplate);
 
-    renderedImages < totalImages ? showLoadMoreBtn() : hideLoadMoreBtn();
+    hideLoader();
+
+    // renderedImages < totalImages ? showLoadMoreBtn() : hideLoadMoreBtn();
+    if (renderedImages < totalImages) {
+      showLoadMoreBtn();
+    } else {
+      hideLoadMoreBtn();
+      loadMoreBtnEl.removeEventListener('click', onLoadMoreBtnClick);
+    }
   } catch (error) {
     console.log(error);
   }
