@@ -6,6 +6,7 @@ import iziToast from 'izitoast';
 const searchFormEl = document.querySelector('.js-form');
 const galleryEl = document.querySelector('.js-gallery');
 const loaderEl = document.querySelector('.loader-wrapper');
+const loadMoreBtnEl = document.querySelector('.js-load-more-btn');
 
 const toastSettings = {
   messageSize: '16',
@@ -19,12 +20,18 @@ const toastSettings = {
   maxWidth: '360px',
 };
 
+let searchedQuery = '';
+let page = 1;
+let totalImages = 0;
+let renderedImages = 0;
+
+hideLoadMoreBtn();
+
 const onSearchFormSubmit = async event => {
   try {
     event.preventDefault();
 
-    const searchedQuery =
-      event.currentTarget.elements.search_query.value.trim();
+    searchedQuery = event.currentTarget.elements.search_query.value.trim();
 
     if (searchedQuery === '') {
       iziToast.show({
@@ -35,10 +42,14 @@ const onSearchFormSubmit = async event => {
       return;
     }
 
+    page = 1;
+
     showLoader();
     galleryEl.innerHTML = '';
 
-    const { data } = await fetchPhotosByQuery(searchedQuery);
+    hideLoadMoreBtn();
+
+    const { data } = await fetchPhotosByQuery(searchedQuery, page);
     if (data.total === 0) {
       iziToast.show({
         message:
@@ -55,6 +66,16 @@ const onSearchFormSubmit = async event => {
       return;
     }
 
+    totalImages = data.total;
+    renderedImages = data.hits.length;
+
+    console.log('Submit RendImgs: ', renderedImages);
+    console.log('Submit TotatImgs: ', totalImages);
+
+    if (data.total > 15) {
+      showLoadMoreBtn();
+    }
+
     const galleryTemplate = data?.hits
       .map(el => createdGalleryCardTemplate(el))
       .join('');
@@ -64,6 +85,8 @@ const onSearchFormSubmit = async event => {
     hideLoader();
 
     searchFormEl.reset();
+
+    loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
 
     let lightbox = new SimpleLightbox('.gallery a', {
       captionsData: 'alt',
@@ -84,4 +107,33 @@ function showLoader() {
 
 function hideLoader() {
   loaderEl.style.display = 'none';
+}
+
+const onLoadMoreBtnClick = async event => {
+  try {
+    page++;
+
+    const { data } = await fetchPhotosByQuery(searchedQuery, page);
+
+    renderedImages += data.hits.length;
+    console.log('After LoadMore RendImgs: ', renderedImages);
+
+    const galleryTemplate = data?.hits
+      .map(el => createdGalleryCardTemplate(el))
+      .join('');
+
+    galleryEl.insertAdjacentHTML('beforeend', galleryTemplate);
+
+    renderedImages < totalImages ? showLoadMoreBtn() : hideLoadMoreBtn();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+function showLoadMoreBtn() {
+  loadMoreBtnEl.style.display = 'block';
+}
+
+function hideLoadMoreBtn() {
+  loadMoreBtnEl.style.display = 'none';
 }

@@ -82,7 +82,8 @@
   border-color: #4E75FF;
 }
 
-.form button {
+.form button,
+.load-more-btn {
   height: 40px;
   /* margin-left: 8px; */
   padding: 10px 24px;
@@ -98,6 +99,7 @@
   align-self: flex-start;
 }
 
-.form button:hover {
+.form button:hover,
+.load-more-btn:hover {
   background-color: var(--button-hover);
 }

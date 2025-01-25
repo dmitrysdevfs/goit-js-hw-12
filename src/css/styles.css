@@ -105,6 +105,16 @@ body {
   color: var(--primary-color);
 }
 
+.load-more-btn {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.load-more-btn.is-hidden {
+  display: none;
+}
+
 .sl-overlay {
   background-color: rgba(46, 47, 66, 0.8) !important;
 }
