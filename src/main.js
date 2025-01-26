@@ -11,7 +11,7 @@ const loadMoreBtnEl = document.querySelector('.js-load-more-btn');
 const toastSettings = {
   messageSize: '16',
   messageColor: 'white',
-  backgroundColor: 'red',
+  backgroundColor: ' #E34234',
   position: 'topRight',
   icon: 'fa-regular fa-circle-xmark',
   progressBar: false,
@@ -69,9 +69,6 @@ const onSearchFormSubmit = async event => {
 
     totalImages = data.total;
     renderedImages = data.hits.length;
-
-    console.log('Submit RendImgs: ', renderedImages);
-    console.log('Submit TotatImgs: ', totalImages);
 
     if (data.total > 15) {
       showLoadMoreBtn();
@@ -134,6 +131,12 @@ const onLoadMoreBtnClick = async event => {
     } else {
       hideLoadMoreBtn();
       loadMoreBtnEl.removeEventListener('click', onLoadMoreBtnClick);
+      iziToast.show({
+        message: "We're sorry, but you've reached the end of search results.",
+        ...toastSettings,
+        backgroundColor: ' #4169E1',
+        icon: 'fa-regular fa-bell',
+      });
     }
   } catch (error) {
     console.log(error);
