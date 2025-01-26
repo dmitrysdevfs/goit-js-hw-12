@@ -88,12 +88,7 @@ const onSearchFormSubmit = async event => {
 
     loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
 
-    let lightbox = new SimpleLightbox('.gallery a', {
-      captionsData: 'alt',
-      captionDelay: 250,
-    });
-
-    lightbox.refresh();
+    showLightbox();
   } catch (error) {
     console.log(error);
   }
@@ -130,6 +125,8 @@ const onLoadMoreBtnClick = async event => {
 
     hideLoader();
 
+    showLightbox();
+
     // renderedImages < totalImages ? showLoadMoreBtn() : hideLoadMoreBtn();
     if (renderedImages < totalImages) {
       showLoadMoreBtn();
@@ -148,4 +145,13 @@ function showLoadMoreBtn() {
 
 function hideLoadMoreBtn() {
   loadMoreBtnEl.style.display = 'none';
+}
+
+function showLightbox() {
+  let lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
+
+  lightbox.refresh();
 }
