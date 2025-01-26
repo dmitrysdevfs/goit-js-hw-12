@@ -24,6 +24,7 @@ let searchedQuery = '';
 let page = 1;
 let totalImages = 0;
 let renderedImages = 0;
+let lightbox;
 
 hideLoadMoreBtn();
 
@@ -148,10 +149,12 @@ function hideLoadMoreBtn() {
 }
 
 function showLightbox() {
-  let lightbox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
-
-  lightbox.refresh();
+  if (!lightbox) {
+    lightbox = new SimpleLightbox('.gallery a', {
+      captionsData: 'alt',
+      captionDelay: 250,
+    });
+  } else {
+    lightbox.refresh();
+  }
 }
